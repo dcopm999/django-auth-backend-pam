@@ -35,6 +35,17 @@ INSTALLED_APPS = [
     # they should be added here
 ]
 
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "auth_backend_pam.backends.PamBackend",
+]
+
+PAM_USERS = {
+    "is_active": True,
+    "is_staff": True,
+    "is_superuser": True,
+}
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -112,3 +123,46 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# Logging settings
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(asctime)s %(module)s "
+            "%(process)d %(thread)d %(message)s"
+        },
+        "django": {"format": "%(module)s %(levelname)s %(message)s"},
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+        "syslog": {
+            "class": "logging.handlers.SysLogHandler",
+            "formatter": "django",
+            "facility": "local7",
+            "address": "/dev/log",
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "level": "DEBUG",
+            "handlers": ["console", "syslog"],
+        },
+        "django.security": {
+            "level": "DEBUG",
+            "handlers": ["console", "syslog"],
+        },
+        "auth_backend_pam.backends": {
+            "level": "DEBUG",
+            "handlers": ["console", "syslog"],
+        },
+    },
+}

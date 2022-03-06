@@ -31,19 +31,30 @@ Add it to your `INSTALLED_APPS`:
 
     INSTALLED_APPS = (
         ...
-        'auth_backend_pam',
+        "auth_backend_pam",
         ...
     )
 
-Add Django authorization backend with pam's URL patterns:
+Add PAM_USERS settings
 
 .. code-block:: python
 
-    urlpatterns = [
+    PAM_USERS = {
+        "is_active": True,
+        "is_staff" : True,
+        "is_superuser": True,
+    }
+
+
+And add AUTHENTICATION_BACKENDS settings
+
+.. code-block:: python
+
+    AUTHENTICATION_BACKENDS = [
         ...
-        path('auth_backend_pam/', include('auth_backend_pam.urls')),
-        ...
+        "auth_backend_pam.backends.PamBackend",
     ]
+
 
 Features
 --------
